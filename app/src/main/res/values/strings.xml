@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WebRtc Video Consultation</string>
+    <string name="turnUrl">turn:35.163.223.87:3478</string>
+    <string name="stunUrl">stun:35.163.223.87:3478</string>
+    <string name="turnUsername">gorst</string>
+    <string name="turnPassword">hero</string>
+    <string name="base_url">https://dev.medimetry.in/</string>
+    <string name="xmppService">ip-172-31-37-244.us-west-2.compute.internal</string>
+    <string name="xmppHost">35.165.107.205</string>
+</resources>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="fill_parent"
+        android:layout_marginTop="5dp"
+        app:contentPadding="8dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:padding="5dp"
+            android:layout_width="fill_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+
+            <TableRow
+
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent">
+
+                <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="0.3"
+                    >
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:text="Pardeep Kumar"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:id="@+id/userName"
+                android:padding="5dp"
+                android:layout_height="wrap_content" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="9779032164"
+                android:textColor="#686868"
+                android:textSize="16sp"
+                android:id="@+id/phoneNumber"
+                android:padding="5dp"
+                android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_height="35sp"
+                    android:layout_width="fill_parent"
+                    android:layout_weight="1"
+                    android:text="Mark Online"
+                    android:textSize="10sp"
+                    android:textColor="#ffffff"
+                    android:padding="1dp"
+                    android:background="@drawable/button_verification_pressed"
+                    android:id="@+id/markOnline"
+                    android:gravity="center"
+                    />
+            </TableRow>
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
