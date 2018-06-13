@@ -65,29 +65,29 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
     NotificationManagerCompat notMan;
 
-   // DbOp dbOp;
+    // DbOp dbOp;
     MediaStream remoteMediaStream;
     Handler handler;
     Runnable runnable;
-    int minute=0;
-    int second=0;
+    int minute = 0;
+    int second = 0;
     PeerConnectionFactory peerConnectionFactory;
     ArrayList<PeerConnection.IceServer> iceServers;
-    public boolean isOrigin=true;
-    public  PeerConnection peerConnection;
-    boolean onetime=false;
-//    RestAdapter restAdapter;
+    public boolean isOrigin = true;
+    public PeerConnection peerConnection;
+    boolean onetime = false;
+    //    RestAdapter restAdapter;
 //    RetroInterface retroInterface;
     VideoRenderer remoteRenderer;
     String getName;
-    Boolean isActuallyStarted=false;
+    Boolean isActuallyStarted = false;
     String MAX_VIDEO_WIDTH_CONSTRAINT = "maxWidth";
     String MIN_VIDEO_WIDTH_CONSTRAINT = "minWidth";
     String MAX_VIDEO_HEIGHT_CONSTRAINT = "maxHeight";
     String MIN_VIDEO_HEIGHT_CONSTRAINT = "minHeight";
     String MAX_VIDEO_FPS_CONSTRAINT = "maxFrameRate";
     String MIN_VIDEO_FPS_CONSTRAINT = "minFrameRate";
-    VideoRenderer videoRenderer=null;
+    VideoRenderer videoRenderer = null;
     SessionDescription oneMore;
     SessionDescription localSessionDesc;
 
@@ -97,7 +97,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
     PeerConnectionObserver peerConnectionObserverClass;
     PeerSdpObserver sdpObserverClass;
-    boolean isIncomingCall=false;
+    boolean isIncomingCall = false;
 
     GLSurfaceView glSurfaceView;
     public TextView calleeName;
@@ -108,13 +108,13 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
     ImageView imageCutCall;
     ImageView stopVideo;
 
-    int countSpeaker=0;
-    int countCamOptions=0;
-    int countVideoStop=0;
-    int pickCall=0;
+    int countSpeaker = 0;
+    int countCamOptions = 0;
+    int countVideoStop = 0;
+    int pickCall = 0;
 
 
-    boolean isCallCut=false;
+    boolean isCallCut = false;
 
     List<IceCandidate> listCandidates;
     String getSdp;
@@ -129,7 +129,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
     String getChildKey;
     ImageView speakerup;
 
-    int countLoadSpeaker=0;
+    int countLoadSpeaker = 0;
     AudioManager audioManager;
     NotificationManager mNM;
     android.support.v4.app.NotificationCompat.Builder builder;
@@ -139,10 +139,11 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
     MediaPlayer mediaPlayer;
     //SharedPrefrenceClass sharedPrefrenceClass;
     public static CallingActivity callingActivity;
-    public static CallingActivity getInstance()
-    {
+
+    public static CallingActivity getInstance() {
         return callingActivity;
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,55 +152,56 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
                 +WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                 +WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
-        callingActivity=this;
+        callingActivity = this;
         setContentView(R.layout.callerscreen);
-        audioManager=(AudioManager)getSystemService(AUDIO_SERVICE);
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
-        sharedPrefrenceClass=new SharedPrefrenceClass(CallingActivity.this);
+        sharedPrefrenceClass = new SharedPrefrenceClass(CallingActivity.this);
 
-        Log.e("isAudioplaying",""+audioManager.isMusicActive());
-        if(audioManager.isMusicActive())
-        {
-            audioManager.setStreamMute(AudioManager.STREAM_MUSIC,false);
+        Log.e("isAudioplaying", "" + audioManager.isMusicActive());
+        if (audioManager.isMusicActive()) {
+            audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
         }
 
-        speakerup=(ImageView)findViewById(R.id.speakerup);
+        speakerup = (ImageView) findViewById(R.id.speakerup);
         speakerup.setOnClickListener(this);
-        calleeName=(TextView)findViewById(R.id.calleeName);
-        callTimer=(TextView)findViewById(R.id.callTimer);
-        imageSpeaker=(ImageView)findViewById(R.id.imageSpeaker);
-        imageCamOption=(ImageView)findViewById(R.id.imageCamOption);
-        imagePickCall=(ImageView)findViewById(R.id.imagePickCall);
-        stopVideo=(ImageView)findViewById(R.id.stopVideo);
+        calleeName = (TextView) findViewById(R.id.calleeName);
+        callTimer = (TextView) findViewById(R.id.callTimer);
+        imageSpeaker = (ImageView) findViewById(R.id.imageSpeaker);
+        imageCamOption = (ImageView) findViewById(R.id.imageCamOption);
+        imagePickCall = (ImageView) findViewById(R.id.imagePickCall);
+        stopVideo = (ImageView) findViewById(R.id.stopVideo);
         imageCamOption.setOnClickListener(this);
         imageSpeaker.setOnClickListener(this);
-        callLayout=(LinearLayout)findViewById(R.id.callLayout);
+        callLayout = (LinearLayout) findViewById(R.id.callLayout);
         callLayout.setVisibility(View.VISIBLE);
         stopVideo.setOnClickListener(this);
-        drName=(TextView)findViewById(R.id.drName);
+        drName = (TextView) findViewById(R.id.drName);
         imagePickCall.setOnClickListener(this);
-        imageCutCall=(ImageView)findViewById(R.id.imageCutCall);
+        imageCutCall = (ImageView) findViewById(R.id.imageCutCall);
         imageCutCall.setOnClickListener(this);
-        glSurfaceView=(GLSurfaceView)findViewById(R.id.glSurfaceView);
-        boolean b=PeerConnectionFactory.initializeAndroidGlobals(this,true,true,true,false);
+        glSurfaceView = (GLSurfaceView) findViewById(R.id.glSurfaceView);
+        boolean b = PeerConnectionFactory.initializeAndroidGlobals(this, true, true, true);
 
-        listCandidates=new ArrayList<IceCandidate>();
-        isIncomingCall=getIntent().getBooleanExtra("incomingCall",false);
+        listCandidates = new ArrayList<IceCandidate>();
+        isIncomingCall = getIntent().getBooleanExtra("incomingCall", false);
 //        sharedPrefrenceClass=new SharedPrefrenceClass(this);
 //
 //        dbOp=new DbOp(this);
-        getSdp=getIntent().getStringExtra("receviedSdpContent");
-        userId=getIntent().getStringExtra("userId");
-        getChildKey=getIntent().getStringExtra("childKey");
-        calleeName.setText(""+getIntent().getStringExtra("userName"));
-        drName.setText(""+getIntent().getStringExtra("userName"));
+        getSdp = getIntent().getStringExtra("receviedSdpContent");
+        userId = getIntent().getStringExtra("userId");
+        getChildKey = getIntent().getStringExtra("childKey");
+
+        Log.e("GetChildKey", "GetChildKey: " + getChildKey);
+
+
+        calleeName.setText("" + getIntent().getStringExtra("userName"));
+        drName.setText("" + getIntent().getStringExtra("userName"));
         updateCallStatus(getChildKey);
 
 
-
-        if(mediaPlayer==null)
-        {
-            mediaPlayer=new MediaPlayer();
+        if (mediaPlayer == null) {
+            mediaPlayer = new MediaPlayer();
 
         }
 
@@ -208,49 +210,34 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
                     Uri.parse("android.resource://com.medimetry.medimetryvideoconsultation/" + R.raw.phone));
             mediaPlayer.prepare();
             mediaPlayer.start();
-            mediaPlayer.setLooping(true);
-        }
-        catch (Exception e)
-        {
-            Log.e("Exception",""+e);
+            // mediaPlayer.setLooping(true);
+        } catch (Exception e) {
+            Log.e("Exception", "" + e);
         }
 
-        if(!b)
-        {
-            Toast.makeText(CallingActivity.this,"Video Chat Not Supported",Toast.LENGTH_LONG).show();
-        }
-        else
-        {
+        if (!b) {
+            Toast.makeText(CallingActivity.this, "Video Chat Not Supported", Toast.LENGTH_LONG).show();
+        } else {
             initComponents();
 
 
-
         }
-
-
-
-
-
 
 
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
+        switch (view.getId()) {
 
             case R.id.speakerup:
 
                 countLoadSpeaker++;
-                Log.e("Load Speaker ","Pressed");
-                if(countLoadSpeaker%2==0)
-                {
+                Log.e("Load Speaker ", "Pressed");
+                if (countLoadSpeaker % 2 == 0) {
                     speakerup.setImageResource(R.mipmap.ic_speaker_up);
                     audioManager.setSpeakerphoneOn(false);
-                }
-                else
-                {
+                } else {
 
                     audioManager.setMode(AudioManager.STREAM_VOICE_CALL);
                     audioManager.setSpeakerphoneOn(true);
@@ -261,13 +248,10 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
             case R.id.stopVideo:
                 countVideoStop++;
-                if(countVideoStop%2==0)
-                {
+                if (countVideoStop % 2 == 0) {
                     stopVideo.setImageResource(R.mipmap.ic_videoend);
                     videoTrack.setEnabled(true);
-                }
-                else
-                {
+                } else {
 
                     stopVideo.setImageResource(R.mipmap.ic_videostart);
                     videoTrack.setEnabled(false);
@@ -275,14 +259,11 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.imageSpeaker:
                 countSpeaker++;
-                if(countSpeaker%2==0)
-                {
+                if (countSpeaker % 2 == 0) {
 
                     imageSpeaker.setImageResource(R.mipmap.ic_micoff);
                     audioTrack.setEnabled(true);
-                }
-                else
-                {
+                } else {
                     imageSpeaker.setImageResource(R.mipmap.ic_micon);
                     audioTrack.setEnabled(false);
 
@@ -290,14 +271,10 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.imageCamOption:
                 countCamOptions++;
-                if(countCamOptions%2==0)
-                {
+                if (countCamOptions % 2 == 0) {
                     imageCamOption.setImageResource(R.mipmap.ic_backcam);
                     flipCam(false);
-                }
-                else
-                {
-
+                } else {
 
 
                     flipCam(true);
@@ -341,13 +318,10 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
                     mediaPlayer.stop();
                     mediaPlayer.release();
-                    mediaPlayer=null;
-                }
-                catch (Exception e)
-                {
+                    mediaPlayer = null;
+                } catch (Exception e) {
 
                 }
-
 
 
                 break;
@@ -361,29 +335,22 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
+    public void initComponents() {
 
 
-
-
-    public void initComponents()
-    {
-
-
-
-        peerConnectionFactory=new PeerConnectionFactory();
-        iceServers=new ArrayList<PeerConnection.IceServer>();
+        peerConnectionFactory = new PeerConnectionFactory();
+        iceServers = new ArrayList<PeerConnection.IceServer>();
 //        iceServers.add(new PeerConnection.IceServer("stun:turn.medimetry.com:347);
 //        iceServers.add(new PeerConnection.IceServer("turn:turn.medimetry.com","gorst","hero"));
 
 
         iceServers.add(new PeerConnection.IceServer(getResources().getString(R.string.stunUrl)));
-        iceServers.add(new PeerConnection.IceServer(getResources().getString(R.string.turnUrl),getResources().getString(R.string.turnUsername),getResources().getString(R.string.turnPassword)));
+        iceServers.add(new PeerConnection.IceServer(getResources().getString(R.string.turnUrl), getResources().getString(R.string.turnUsername), getResources().getString(R.string.turnPassword)));
 
 
-
-        MediaConstraints mediaConstraints=new MediaConstraints();
-        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("offerToReceiveAudio","true"));
-        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("offerToReceiverVideo","true"));
+        MediaConstraints mediaConstraints = new MediaConstraints();
+        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("offerToReceiveAudio", "true"));
+        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("offerToReceiverVideo", "true"));
 
 
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MIN_VIDEO_WIDTH_CONSTRAINT, "800"));
@@ -395,11 +362,11 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         mediaConstraints.optional.add(new MediaConstraints.KeyValuePair("googCpuOveruseDetection", "false"));
 
 
-        videoSource=peerConnectionFactory.createVideoSource(VideoCapturer.create(VideoCapturerAndroid.getNameOfFrontFacingDevice()),new MediaConstraints());
-        AudioSource audioSource=peerConnectionFactory.createAudioSource(new MediaConstraints());
-        videoTrack=peerConnectionFactory.createVideoTrack("ARDAMSv0",videoSource);
-        audioTrack=peerConnectionFactory.createAudioTrack("ARDAMSa0",audioSource);
-        localMediaStream=peerConnectionFactory.createLocalMediaStream("LocalMediaStream");
+        videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(VideoCapturerAndroid.getNameOfFrontFacingDevice()), new MediaConstraints());
+        AudioSource audioSource = peerConnectionFactory.createAudioSource(new MediaConstraints());
+        videoTrack = peerConnectionFactory.createVideoTrack("ARDAMSv0", videoSource);
+        audioTrack = peerConnectionFactory.createAudioTrack("ARDAMSa0", audioSource);
+        localMediaStream = peerConnectionFactory.createLocalMediaStream("LocalMediaStream");
 
         VideoRendererGui.setView(glSurfaceView, new Runnable() {
             @Override
@@ -411,18 +378,13 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         audioTrack.setEnabled(true);
 
 
-
-
-        try
-        {
-            remoteRenderer = VideoRendererGui.createGui(0,0, 100, 100, VideoRendererGui.ScalingType.SCALE_ASPECT_FILL, true);
+        try {
+            remoteRenderer = VideoRendererGui.createGui(0, 0, 100, 100, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT, true);
             videoRenderer = VideoRendererGui.createGui(70, 70, 30, 30, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT, true);
             videoTrack.addRenderer(videoRenderer);
 
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             // Log.e("Video Renderer",""+e);
         }
 
@@ -430,18 +392,15 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         localMediaStream.addTrack(audioTrack);
 
 
-        sdpObserverClass=new PeerSdpObserver();
-        peerConnectionObserverClass=new PeerConnectionObserver();
-        peerConnection=peerConnectionFactory.createPeerConnection(iceServers,mediaConstraints,peerConnectionObserverClass);
+        sdpObserverClass = new PeerSdpObserver();
+        peerConnectionObserverClass = new PeerConnectionObserver();
+        peerConnection = peerConnectionFactory.createPeerConnection(iceServers, mediaConstraints, peerConnectionObserverClass);
         peerConnection.addStream(localMediaStream);
 
-        if(peerConnection.getRemoteDescription() ==null) {
+        if (peerConnection.getRemoteDescription() == null) {
             peerConnection.setRemoteDescription(sdpObserverClass, new SessionDescription(SessionDescription.Type.OFFER, getSdp));
         }
     }
-
-
-
 
 
     public class PeerConnectionObserver implements PeerConnection.Observer {
@@ -459,9 +418,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
             if (iceConnectionState.name().equals("CONNECTED")) {
                 //  Log.e("Connected","Connected");
-            }
-            else if(iceConnectionState.name().equalsIgnoreCase("DISCONNECTED"))
-            {
+            } else if (iceConnectionState.name().equalsIgnoreCase("DISCONNECTED")) {
                 peerConnection.close();
 
                 finish();
@@ -469,52 +426,18 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         @Override
+        public void onIceConnectionReceivingChange(boolean b) {
+            
+        }
+
+        @Override
         public void onIceGatheringChange(final PeerConnection.IceGatheringState iceGatheringState) {
-            Log.e("Ice Connection Gather", "" + iceGatheringState.name());
-
-            boolean isGatheringComplete = false;
-            if(!isGatheringComplete) {
-                if (iceGatheringState.name().equals("GATHERING")) {
-
-                    isGatheringComplete = true;
-
-
-
-
-
-                }
-            }
-
-
+            Log.e("Ice Conn Gather Change", "" + iceGatheringState.name());
 
             if (iceGatheringState.name().equals("COMPLETE")) {
-                Log.e("Complete","Complete");
+                Log.e("Complete", "Complete");
 
 //                updateSdp(getChildKey,getSessionDesc);
-
-//                RetrofitInitClass.RetroInit(CallingActivity.this).send_sdp("" + userId, "" + getSessionDesc,"Pardeep", new Callback<Response>() {
-//                    @Override
-//                    public void success(Response response, Response response2) {
-//                        Log.e("Success","Success");
-//
-//                        try {
-//
-//
-//
-//                        }
-//                        catch (Exception e)
-//                        {
-//                            Log.e("Exception",""+e);
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void failure(RetrofitError retrofitError) {
-//                        Log.e("failure","failure"+retrofitError);
-//                    }
-//                });
-
 
                 // Log.e("Final Sdp",""+getSessionDesc);
             }
@@ -525,9 +448,9 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
             // Log.e("Ice Candidate sdp",""+iceCandidate.sdp);
 
 
-            Log.e("Sdp Lines",""+iceCandidate.sdp);
-            Log.e("Sdp index",""+iceCandidate.sdpMLineIndex);
-            Log.e("Sdp mid",""+iceCandidate.sdpMid);
+            Log.e("Sdp Lines", "" + iceCandidate.sdp);
+            Log.e("Sdp index", "" + iceCandidate.sdpMLineIndex);
+            Log.e("Sdp mid", "" + iceCandidate.sdpMid);
             IceCandidate ice = new IceCandidate(iceCandidate.sdpMid, iceCandidate.sdpMLineIndex, iceCandidate.sdp);
 
 
@@ -535,22 +458,21 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
                 getSessionDesc = localSessionDesc.description;
             }
             onetime = true;
-            Log.e("Old Sdp",""+iceCandidate.sdp);
+            Log.e("Old Sdp", "" + iceCandidate.sdp);
             getSessionDesc = getSessionDesc + "a=" + iceCandidate.sdp + "\n";
 
-            Log.e("Old Sdp",""+getSessionDesc.toString());
+            Log.e("Old Sdp", "" + getSessionDesc.toString());
             oneMore = new SessionDescription(localSessionDesc.type, getSessionDesc);
 
 
             //peerConnection.addIceCandidate(iceCandidate);
 
 
-
-            String jsonFormat="{\"sdpMid\":"+iceCandidate.sdpMid+","+"\"sdpMlin\":"+iceCandidate.sdpMLineIndex+","+"\"sdp\":"+"&quot;"+iceCandidate.sdp+"&quot;"+"}";
+            String jsonFormat = "{\"sdpMid\":" + iceCandidate.sdpMid + "," + "\"sdpMlin\":" + iceCandidate.sdpMLineIndex + "," + "\"sdp\":" + "&quot;" + iceCandidate.sdp + "&quot;" + "}";
 
             //updateSdpLines(getChildKey,iceCandidate.sdpMid,""+iceCandidate.sdpMLineIndex,ice.sdp);
 
-            Xmpp_Connection.sendMessage(""+getChildKey, Message.Type.headline,jsonFormat);
+            Xmpp_Connection.sendMessage("" + getChildKey, Message.Type.headline, jsonFormat);
 
 
         }
@@ -558,8 +480,11 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         public void onAddStream(MediaStream mediaStream) {
             //Log.e("Add Media String ", "" + mediaStream);
-            remoteMediaStream=mediaStream;
+            remoteMediaStream = mediaStream;
             remoteMediaStream.audioTracks.get(0);//.addRenderer(remoteRenderer);
+
+
+            // Now video should not gets played
             remoteMediaStream.videoTracks.get(0).addRenderer(remoteRenderer);
         }
 
@@ -567,8 +492,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         public void onRemoveStream(MediaStream mediaStream) {
 
 
-
-            Log.e("Remove Stream Called","Removed Stream Called");
+            Log.e("Remove Stream Called", "Removed Stream Called");
 
             // Log.e("Remove Strign ", "");
         }
@@ -592,32 +516,19 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-
-
-
-    public void connectToServer()
-    {
-        if (Xmpp_Connection.mConnection != null)
-        {
-            if(Xmpp_Connection.mConnection.isConnected())
-            {
-           //     Xmpp_Connection.loginUser(Xmpp_Connection.mConnection,""+dbOp.getSessionId());
-                 Xmpp_Connection.loginUser(Xmpp_Connection.mConnection,"70921");
-            }
-            else
-            {
+    public void connectToServer() {
+        if (Xmpp_Connection.mConnection != null) {
+            if (Xmpp_Connection.mConnection.isConnected()) {
+                //     Xmpp_Connection.loginUser(Xmpp_Connection.mConnection,""+dbOp.getSessionId());
+                Xmpp_Connection.loginUser(Xmpp_Connection.mConnection, "70921");
+            } else {
                 stopService(new Intent(CallingActivity.this, Service_IncomingCall.class));
-                startService(new Intent(CallingActivity.this,Service_IncomingCall.class));
+                startService(new Intent(CallingActivity.this, Service_IncomingCall.class));
             }
         }
 
 
-
     }
-
-
-
-
 
 
     public class PeerSdpObserver implements SdpObserver {
@@ -630,10 +541,10 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
             //updateSdp(getChildKey,getSessionDesc);
 
-           // updateSdp(getChildKey,localSessionDesc.description);
+            // updateSdp(getChildKey,localSessionDesc.description);
 
 
-            Xmpp_Connection.sendMessage(""+getChildKey, Message.Type.error,""+localSessionDesc.description);
+            Xmpp_Connection.sendMessage("" + getChildKey, Message.Type.error, "" + localSessionDesc.description);
 
 
 //            Log.e("Session Desction ",""+sessionDescription.type);
@@ -674,123 +585,104 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         super.onDestroy();
 
 
-        Log.e("Finished","FInded");
+        Log.e("Finished", "FInded");
     }
 
-    public void updateCallStatus(String childKey)
-    {
-        Map<String,Object> mapObjectMap=new HashMap<String,Object>();
-        mapObjectMap.put("callStatus","reached");
- //       FirebaseMisc.getDatabaseReference().child(childKey).updateChildren(mapObjectMap);
+    public void updateCallStatus(String childKey) {
+        Map<String, Object> mapObjectMap = new HashMap<String, Object>();
+        mapObjectMap.put("callStatus", "reached");
+        //       FirebaseMisc.getDatabaseReference().child(childKey).updateChildren(mapObjectMap);
     }
 
 
+    public void removeNode() {
+        //  FirebaseMisc.getDatabaseReference().child(getChildKey).removeValue();
 
-    public void removeNode()
-    {
-      //  FirebaseMisc.getDatabaseReference().child(getChildKey).removeValue();
-
-        Xmpp_Connection.sendMessage(""+getChildKey, Message.Type.headline,"busy");
+        Xmpp_Connection.sendMessage("" + getChildKey, Message.Type.headline, "busy");
 
     }
 
 
-
-    public void updateSdp(String childKey,String sdp)
-    {
-        Map<String,Object> objectMap=new HashMap<String,Object>();
-        objectMap.put("sdp",sdp);
-        objectMap.put("callStatus","ansSend");
-      //  FirebaseMisc.getDatabaseReference().child(childKey).updateChildren(objectMap);
+    public void updateSdp(String childKey, String sdp) {
+        Map<String, Object> objectMap = new HashMap<String, Object>();
+        objectMap.put("sdp", sdp);
+        objectMap.put("callStatus", "ansSend");
+        //  FirebaseMisc.getDatabaseReference().child(childKey).updateChildren(objectMap);
     }
 
 
-    public void updateSdpLines(String childKey,String sdpMin,String sdpLine,String sdp)
-    {
+    public void updateSdpLines(String childKey, String sdpMin, String sdpLine, String sdp) {
 
-        Map<String,Object> objectMap=new HashMap<String,Object>();
-        objectMap.put("iceFlowBy","user");
-        objectMap.put("sdpMin",sdpMin);
-        objectMap.put("sdpLine",sdpLine);
-        objectMap.put("iceSdp",sdp);
-        objectMap.put("callStatus","userFlow");
-      //  FirebaseMisc.getDatabaseReference().child(childKey).updateChildren(objectMap);
+        Map<String, Object> objectMap = new HashMap<String, Object>();
+        objectMap.put("iceFlowBy", "user");
+        objectMap.put("sdpMin", sdpMin);
+        objectMap.put("sdpLine", sdpLine);
+        objectMap.put("iceSdp", sdp);
+        objectMap.put("callStatus", "userFlow");
+        //  FirebaseMisc.getDatabaseReference().child(childKey).updateChildren(objectMap);
 
     }
 
 
-    public void finishActivity()
-    {
-        isCallCut=true;
+    public void finishActivity() {
+        isCallCut = true;
         if (notificationManager_background != null) {
             notificationManager_background.cancelAll();
         }
-        try
-        {
+        try {
             notificationManager_background.cancelAll();
 
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
 
         }
 
         finish();
-        callingActivity=null;
+        callingActivity = null;
         removeNode();
 
-      //  sharedPrefrenceClass.setActivityLaunched(false);
-        try
-        {
+        //  sharedPrefrenceClass.setActivityLaunched(false);
+        try {
             mediaPlayer.stop();
             mediaPlayer.release();
-            mediaPlayer=null;
-        }
-        catch (Exception e)
-        {
-            Log.e("---",""+e);
+            mediaPlayer = null;
+        } catch (Exception e) {
+            Log.e("---", "" + e);
         }
         peerConnection.dispose();
-        if(videoSource!=null)
+        if (videoSource != null)
             videoSource.dispose();
 
 
-
-
-
-try {
-    handler.removeCallbacks(runnable);
-}catch (Exception e)
-{
-Log.e("---",""+e);
-}
+        try {
+            handler.removeCallbacks(runnable);
+        } catch (Exception e) {
+            Log.e("---", "" + e);
+        }
     }
 
 
-
-
-//
-    public void recurFunc()
-    {callTimer.setVisibility(View.VISIBLE);
+    //
+    public void recurFunc() {
+        callTimer.setVisibility(View.VISIBLE);
 
         handler = new Handler();
         runnable = new Runnable() {
             public void run() {
 
                 second++;
-                if(second>59)
-                {
-                    second=0;
+                if (second > 59) {
+                    second = 0;
                     minute++;
                 }
 
-                DecimalFormat decimalFormat=new DecimalFormat("00");
-                Log.e("----",""+decimalFormat.format(minute)+" : "+decimalFormat.format(second));
+                DecimalFormat decimalFormat = new DecimalFormat("00");
+                Log.e("----", "" + decimalFormat.format(minute) + " : " + decimalFormat.format(second));
 
-                String getMinute=""+decimalFormat.format(minute);
-                String getSeconds=""+decimalFormat.format(second);
+                String getMinute = "" + decimalFormat.format(minute);
+                String getSeconds = "" + decimalFormat.format(second);
 
-                callTimer.setText(""+getMinute+" : "+getSeconds);;
+                callTimer.setText("" + getMinute + " : " + getSeconds);
+                ;
 
                 //timerText.setText("Waiting For Sms 0:"+decimalFormat.format(count));
 
@@ -804,12 +696,7 @@ Log.e("---",""+e);
     }
 
 
-
-
-
-
-    public void setRemoteIceCandidates(IceCandidate remoteIceCandidates)
-    {
+    public void setRemoteIceCandidates(IceCandidate remoteIceCandidates) {
         peerConnection.addIceCandidate(remoteIceCandidates);
     }
 
@@ -820,47 +707,38 @@ Log.e("---",""+e);
 //    }
 
 
-    public void flipCam(boolean flipBack)
-    {
+    public void flipCam(boolean flipBack) {
 
 
-        if(videoSource!=null) {
+        if (videoSource != null) {
 
             videoSource.stop();
-            videoSource=null;
+            videoSource = null;
         }
 
         localMediaStream.removeTrack(videoTrack);
         peerConnection.removeStream(localMediaStream);
-        if(flipBack) {
+        if (flipBack) {
             videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(VideoCapturerAndroid.getNameOfBackFacingDevice()), new MediaConstraints());
-        }else
-        {
+        } else {
             videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(VideoCapturerAndroid.getNameOfFrontFacingDevice()), new MediaConstraints());
 
         }
-        AudioSource audioSource=peerConnectionFactory.createAudioSource(new MediaConstraints());
-        audioTrack=peerConnectionFactory.createAudioTrack("ARDAMSa0",audioSource);
-        videoTrack=peerConnectionFactory.createVideoTrack("ARDAMSv0",videoSource);
-        localMediaStream=peerConnectionFactory.createLocalMediaStream("LocalMediaStream");
+        AudioSource audioSource = peerConnectionFactory.createAudioSource(new MediaConstraints());
+        audioTrack = peerConnectionFactory.createAudioTrack("ARDAMSa0", audioSource);
+        videoTrack = peerConnectionFactory.createVideoTrack("ARDAMSv0", videoSource);
+        localMediaStream = peerConnectionFactory.createLocalMediaStream("LocalMediaStream");
         videoTrack.setEnabled(true);
         audioTrack.setEnabled(true);
 
 
-
-
-
-
-        try
-        {
+        try {
             videoRenderer = VideoRendererGui.createGui(70, 70, 30, 30, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT, true);
             videoTrack.addRenderer(videoRenderer);
 
 
-        }
-        catch (Exception e)
-        {
-            Log.e("Video Renderer",""+e);
+        } catch (Exception e) {
+            Log.e("Video Renderer", "" + e);
         }
 
         localMediaStream.addTrack(videoTrack);
@@ -873,31 +751,27 @@ Log.e("---",""+e);
     @Override
     protected void onStop() {
         super.onStop();
-        Log.e("OnsTOP WORKING","ONsTOOPE");
+        Log.e("OnsTOP WORKING", "ONsTOOPE");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e("onPuase","calaing");
+        Log.e("onPuase", "calaing");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
 
-                if(!isCallCut) {
-                    Log.e("isnotCut","isnotcu");
-                  //  makeNotification();
+                if (!isCallCut) {
+                    Log.e("isnotCut", "isnotcu");
+                    //  makeNotification();
                 }
-                }
+            }
         });
     }
 
 
-
-
-
-    public void callOnHold()
-    {
+    public void callOnHold() {
         String timeStamp = new SimpleDateFormat("HHmmss").format(new Date());
         Intent intent = new Intent();
 
@@ -915,8 +789,8 @@ Log.e("---",""+e);
         notMan.notify(Integer.parseInt(timeStamp), summaryNotification);
 
     }
-    public void holdBack()
-    {
+
+    public void holdBack() {
         if (notMan != null) {
             notMan.cancelAll();
         }
@@ -925,8 +799,7 @@ Log.e("---",""+e);
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK)
-        {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
         }
         return super.onKeyDown(keyCode, event);

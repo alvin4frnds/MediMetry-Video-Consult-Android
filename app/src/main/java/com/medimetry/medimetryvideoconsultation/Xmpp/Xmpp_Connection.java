@@ -328,9 +328,10 @@ public class Xmpp_Connection
 
     public static void sendMessage(String toUser,Message.Type type, String message)
     {
+        toUser = toUser.indexOf("@") > 0 ? toUser : toUser+"@"+"ip-172-31-37-244.us-west-2.compute.internal";
+
         try
         {
-            toUser="10906";
             Message me=new Message();
             me.setTo(toUser+"@"+"ip-172-31-37-244.us-west-2.compute.internal");
             me.setSubject("postId");
@@ -347,7 +348,7 @@ public class Xmpp_Connection
             Log.e("===",""+deliveryReceiptId);
 
 
-        }catch (Exception e)
+        } catch (Exception e)
         {
         }
     }

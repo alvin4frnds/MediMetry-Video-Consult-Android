@@ -22,8 +22,12 @@
         android:layout_width="fill_parent"
         android:layout_marginTop="8dp"
         android:id="@+id/recyclerview"
-        android:layout_height="fill_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="180dp"></android.support.v7.widget.RecyclerView>
 
 
-
+    <VideoView
+            android:id="@+id/myVideo"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+    />
 </LinearLayout>

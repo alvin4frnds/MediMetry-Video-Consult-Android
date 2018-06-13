@@ -4,32 +4,27 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
-
+import android.widget.VideoView;
 import com.medimetry.medimetryvideoconsultation.VideoCalling.Service_IncomingCall;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Filter;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerview;
     SharedPrefrenceClass sharedPrefrenceClass;
     EditText edittextSearch;
+
+    private VideoView vidView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +109,11 @@ public class MainActivity extends AppCompatActivity {
         startService(new Intent(MainActivity.this, Service_IncomingCall.class));
 
 
+        // Custom code
+//        VideoView vidView = (VideoView)findViewById(R.id.myVideo);
+//        Uri vidUri = Uri.parse("http://pc.medimetry.in/video-stream/");
+//        vidView.setVideoURI(vidUri);
+//        vidView.start();
     }
 
     public void access_permission() {
