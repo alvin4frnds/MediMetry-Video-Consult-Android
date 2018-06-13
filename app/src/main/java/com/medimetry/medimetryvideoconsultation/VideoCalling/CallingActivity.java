@@ -1,5 +1,6 @@
 package com.medimetry.medimetryvideoconsultation.VideoCalling;//package com.medimetry.appmedi.VideoCalling;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -30,22 +31,7 @@ import com.medimetry.medimetryvideoconsultation.SharedPrefrenceClass;
 import com.medimetry.medimetryvideoconsultation.Xmpp.Xmpp_Connection;
 
 import org.jivesoftware.smack.packet.Message;
-import org.webrtc.AudioSource;
-import org.webrtc.AudioTrack;
-import org.webrtc.DataChannel;
-import org.webrtc.IceCandidate;
-import org.webrtc.MediaConstraints;
-import org.webrtc.MediaStream;
-import org.webrtc.PeerConnection;
-import org.webrtc.PeerConnectionFactory;
-import org.webrtc.SdpObserver;
-import org.webrtc.SessionDescription;
-import org.webrtc.VideoCapturer;
-import org.webrtc.VideoCapturerAndroid;
-import org.webrtc.VideoRenderer;
-import org.webrtc.VideoRendererGui;
-import org.webrtc.VideoSource;
-import org.webrtc.VideoTrack;
+import org.webrtc.*;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -144,6 +130,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         return callingActivity;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,7 +145,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
         sharedPrefrenceClass = new SharedPrefrenceClass(CallingActivity.this);
 
-        Log.e("isAudioplaying", "" + audioManager.isMusicActive());
+        // Log.e("isAudioplaying", "" + audioManager.isMusicActive());
         if (audioManager.isMusicActive()) {
             audioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
         }
@@ -192,7 +179,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         userId = getIntent().getStringExtra("userId");
         getChildKey = getIntent().getStringExtra("childKey");
 
-        Log.e("GetChildKey", "GetChildKey: " + getChildKey);
+//        Log.e("GetChildKey", "GetChildKey: " + getChildKey);
 
 
         calleeName.setText("" + getIntent().getStringExtra("userName"));
@@ -233,7 +220,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.speakerup:
 
                 countLoadSpeaker++;
-                Log.e("Load Speaker ", "Pressed");
+                // Log.e("Load Speaker ", "Pressed");
                 if (countLoadSpeaker % 2 == 0) {
                     speakerup.setImageResource(R.mipmap.ic_speaker_up);
                     audioManager.setSpeakerphoneOn(false);
@@ -357,12 +344,12 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MAX_VIDEO_WIDTH_CONSTRAINT, "1280"));
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MIN_VIDEO_HEIGHT_CONSTRAINT, "480"));
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MAX_VIDEO_HEIGHT_CONSTRAINT, "720"));
-        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MIN_VIDEO_FPS_CONSTRAINT, "30"));
-        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MAX_VIDEO_FPS_CONSTRAINT, "50"));
+        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MIN_VIDEO_FPS_CONSTRAINT, "2"));
+        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MAX_VIDEO_FPS_CONSTRAINT, "10"));
         mediaConstraints.optional.add(new MediaConstraints.KeyValuePair("googCpuOveruseDetection", "false"));
 
 
-        videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(VideoCapturerAndroid.getNameOfFrontFacingDevice()), new MediaConstraints());
+        videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(CameraEnumerationAndroid.getNameOfFrontFacingDevice()), new MediaConstraints());
         AudioSource audioSource = peerConnectionFactory.createAudioSource(new MediaConstraints());
         videoTrack = peerConnectionFactory.createVideoTrack("ARDAMSv0", videoSource);
         audioTrack = peerConnectionFactory.createAudioTrack("ARDAMSa0", audioSource);
@@ -379,8 +366,8 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
 
         try {
-            remoteRenderer = VideoRendererGui.createGui(0, 0, 100, 100, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT, true);
-            videoRenderer = VideoRendererGui.createGui(70, 70, 30, 30, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT, true);
+            remoteRenderer = VideoRendererGui.createGui(0, 0, 100, 100, RendererCommon.ScalingType.SCALE_ASPECT_FIT, true);
+            videoRenderer = VideoRendererGui.createGui(70, 70, 30, 30, RendererCommon.ScalingType.SCALE_ASPECT_FIT, true);
             videoTrack.addRenderer(videoRenderer);
 
 
@@ -407,14 +394,14 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void onSignalingChange(PeerConnection.SignalingState signalingState) {
-            Log.e("On Signal Change", "" + signalingState.name());
+            // Log.e("On Signal Change", "" + signalingState.name());
 
         }
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
 
-            Log.e("Ice Connection Change", "" + iceConnectionState.name());
+            // Log.e("Ice Connection Change", "" + iceConnectionState.name());
 
             if (iceConnectionState.name().equals("CONNECTED")) {
                 //  Log.e("Connected","Connected");
@@ -427,7 +414,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
         @Override
         public void onIceConnectionReceivingChange(boolean b) {
-            
+
         }
 
         @Override
@@ -719,9 +706,9 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         localMediaStream.removeTrack(videoTrack);
         peerConnection.removeStream(localMediaStream);
         if (flipBack) {
-            videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(VideoCapturerAndroid.getNameOfBackFacingDevice()), new MediaConstraints());
+            videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(CameraEnumerationAndroid.getNameOfBackFacingDevice()), new MediaConstraints());
         } else {
-            videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(VideoCapturerAndroid.getNameOfFrontFacingDevice()), new MediaConstraints());
+            videoSource = peerConnectionFactory.createVideoSource(VideoCapturer.create(CameraEnumerationAndroid.getNameOfFrontFacingDevice()), new MediaConstraints());
 
         }
         AudioSource audioSource = peerConnectionFactory.createAudioSource(new MediaConstraints());
@@ -733,7 +720,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
 
 
         try {
-            videoRenderer = VideoRendererGui.createGui(70, 70, 30, 30, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT, true);
+            videoRenderer = VideoRendererGui.createGui(70, 70, 30, 30, RendererCommon.ScalingType.SCALE_ASPECT_FIT, true);
             videoTrack.addRenderer(videoRenderer);
 
 
