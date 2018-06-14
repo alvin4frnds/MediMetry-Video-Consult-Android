@@ -46,6 +46,7 @@ import java.util.Map;
  */
 
 public class CallingActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String MIN_VIDEO_WIDTH_VALUE = "800";
 
 //
 
@@ -340,7 +341,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair("offerToReceiverVideo", "true"));
 
 
-        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MIN_VIDEO_WIDTH_CONSTRAINT, "800"));
+        mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MIN_VIDEO_WIDTH_CONSTRAINT, MIN_VIDEO_WIDTH_VALUE));
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MAX_VIDEO_WIDTH_CONSTRAINT, "1280"));
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MIN_VIDEO_HEIGHT_CONSTRAINT, "480"));
         mediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(MAX_VIDEO_HEIGHT_CONSTRAINT, "720"));
@@ -448,7 +449,7 @@ public class CallingActivity extends AppCompatActivity implements View.OnClickLi
             Log.e("Old Sdp", "" + iceCandidate.sdp);
             getSessionDesc = getSessionDesc + "a=" + iceCandidate.sdp + "\n";
 
-            Log.e("Old Sdp", "" + getSessionDesc.toString());
+            Log.e("Old Sdp", "" + getSessionDesc);
             oneMore = new SessionDescription(localSessionDesc.type, getSessionDesc);
 
 
